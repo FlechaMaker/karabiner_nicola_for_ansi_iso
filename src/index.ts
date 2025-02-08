@@ -196,7 +196,7 @@ const nicolaManipulators = [
   ),
 ];
 
-function nicolaUKBasic() {
+function nicolaBasic() {
   return k
     .rule(
       "NICOLAの基本設定 (rev 3)",
@@ -232,6 +232,6 @@ function commandKeyRemap() {
 }
 
 // Write to profile
-k.writeToProfile("UK NICOLA", [nicolaUKBasic(), commandKeyRemap()], {
+k.writeToProfile("ANSI/ISO NICOLA", [nicolaBasic(), commandKeyRemap()], {
   "basic.simultaneous_threshold_milliseconds": 100,
 });

@@ -1,5 +1,5 @@
 {
-  "name": "karabiner-config",
+  "name": "Karabiner.ts NICOLA for ANSI and ISO",
   "description": "karabiner config in karabiner.ts",
   "scripts": {
     "build": "tsx src/index.ts",
