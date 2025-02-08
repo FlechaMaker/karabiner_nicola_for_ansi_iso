@@ -8,9 +8,193 @@ const japaneseInputSources: k.InputSource[] = [
   { input_mode_id: "com.apple.inputmethod.Japanese.HalfWidthKana" },
 ];
 
-k.writeToProfile("UK NICOLA", [nicolaUKBasic(), commandKeyRemap()], {
-  "basic.simultaneous_threshold_milliseconds": 100,
-});
+interface KeyMappings {
+  [key: string]: k.ToKeyCode[];
+}
+
+// Number key mappings with spacebar
+const numberKeyMaps: KeyMappings = {
+  "1": ["slash", "left_shift"],
+  "2": ["slash"],
+  "3": ["grave_accent_and_tilde", "left_shift"],
+  "4": ["open_bracket"],
+  "5": ["close_bracket"],
+  "6": ["open_bracket", "left_option"],
+  "7": ["close_bracket", "left_option"],
+  "8": ["9", "left_shift"],
+  "9": ["0", "left_shift"],
+};
+
+// Spacebar combinations
+const spacebarMaps: KeyMappings = {
+  q: ["l", "a"],
+  w: ["e"],
+  e: ["r", "i"],
+  r: ["l", "y", "a"],
+  t: ["r", "e"],
+  y: ["y", "o"],
+  u: ["n", "i"],
+  i: ["r", "u"],
+  o: ["m", "a"],
+  p: ["l", "e"],
+  a: ["w", "o"],
+  s: ["a"],
+  d: ["n", "a"],
+  f: ["l", "y", "u"],
+  g: ["m", "o"],
+  h: ["m", "i"],
+  j: ["o"],
+  k: ["n", "o"],
+  l: ["l", "y", "o"],
+  semicolon: ["l", "t", "u"],
+  quote: ["l", "w", "a"],
+  z: ["l", "u"],
+  x: ["hyphen"],
+  c: ["r", "o"],
+  v: ["y", "a"],
+  b: ["l", "i"],
+  n: ["n", "u"],
+  m: ["y", "u"],
+  comma: ["m", "u"],
+  period: ["w", "a"],
+  slash: ["l", "o"],
+};
+
+// Left command combinations
+const leftCommandMaps: KeyMappings = {
+  q: ["period", "left_option"],
+  w: ["fn"],
+  e: ["fn"],
+  r: ["fn"],
+  t: ["fn"],
+  y: ["p", "a"],
+  u: ["d", "i"],
+  i: ["g", "u"],
+  o: ["d", "u"],
+  p: ["p", "i"],
+  a: ["fn"],
+  s: ["fn"],
+  d: ["fn"],
+  f: ["fn"],
+  g: ["fn"],
+  h: ["b", "a"],
+  j: ["d", "o"],
+  k: ["g", "i"],
+  l: ["p", "o"],
+  semicolon: ["semicolon"],
+  z: ["fn"],
+  x: ["fn"],
+  c: ["fn"],
+  v: ["fn"],
+  b: ["b", "e"],
+  n: ["p", "u"],
+  m: ["z", "o"],
+  comma: ["p", "e"],
+  period: ["b", "o"],
+  slash: ["fn"],
+};
+
+// Right command combinations
+const rightCommandMaps: KeyMappings = {
+  q: ["fn"],
+  w: ["g", "a"],
+  e: ["d", "a"],
+  r: ["g", "o"],
+  t: ["z", "a"],
+  y: ["fn"],
+  u: ["b", "u"],
+  i: ["fn"],
+  o: ["fn"],
+  p: ["comma", "left_option"],
+  a: ["v", "u"],
+  s: ["z", "i"],
+  d: ["d", "e"],
+  f: ["g", "e"],
+  g: ["z", "e"],
+  h: ["z", "h"],
+  j: ["z", "j"],
+  k: ["z", "k"],
+  l: ["z", "l"],
+  semicolon: ["fn"],
+  z: ["fn"],
+  x: ["b", "i"],
+  c: ["z", "u"],
+  v: ["b", "u"],
+  b: ["b", "e"],
+  n: ["fn"],
+  m: ["fn"],
+  comma: ["comma", "left_option"],
+  period: ["period", "left_option"],
+  slash: ["slash", "left_option"],
+};
+
+// Single key mappings
+const singleKeyMaps: KeyMappings = {
+  q: ["period"],
+  w: ["k", "a"],
+  e: ["t", "a"],
+  r: ["k", "o"],
+  t: ["s", "a"],
+  y: ["r", "a"],
+  u: ["c", "h", "i"],
+  i: ["k", "u"],
+  o: ["t", "u"],
+  p: ["comma"],
+  a: ["u"],
+  s: ["s", "i"],
+  d: ["t", "e"],
+  f: ["k", "e"],
+  g: ["s", "e"],
+  h: ["h", "a"],
+  j: ["t", "o"],
+  k: ["k", "i"],
+  l: ["i"],
+  semicolon: ["n", "n"],
+  z: ["spacebar"],
+  x: ["h", "i"],
+  c: ["s", "u"],
+  v: ["f", "u"],
+  b: ["h", "e"],
+  n: ["m", "e"],
+  m: ["s", "o"],
+  comma: ["n", "e"],
+  period: ["h", "o"],
+};
+
+// Generate manipulators
+const nicolaManipulators = [
+  // Number keys with spacebar
+  k.withMapper(numberKeyMaps)((key, value) =>
+    k
+      .mapSimultaneous(["spacebar", key.toString() as k.FromKeyParam])
+      .to(value.map((v) => ({ key_code: v })))
+  ),
+
+  // Spacebar combinations
+  k.withMapper(spacebarMaps)((key, value) =>
+    k
+      .mapSimultaneous(["spacebar", key as k.FromKeyParam])
+      .to(value.map((v) => ({ key_code: v })))
+  ),
+  // Left command combinations
+  k.withMapper(leftCommandMaps)((key, value) =>
+    k
+      .mapSimultaneous(["left_command", key as k.FromKeyParam])
+      .to(value.map((v) => ({ key_code: v })))
+  ),
+
+  // Right command combinations
+  k.withMapper(rightCommandMaps)((key, value) =>
+    k
+      .mapSimultaneous(["right_command", key as k.FromKeyParam])
+      .to(value.map((v) => ({ key_code: v })))
+  ),
+
+  // Single key mappings
+  k.withMapper(singleKeyMaps)((key, value) =>
+    k.map(key as k.FromKeyParam).to(value.map((v) => ({ key_code: v })))
+  ),
+];
 
 function nicolaUKBasic() {
   return k
@@ -19,141 +203,7 @@ function nicolaUKBasic() {
       k.ifInputSource(japaneseInputSources),
       k.ifApp("^com\\.apple\\.loginwindow$").unless()
     )
-    .manipulators([
-      k.mapSimultaneous(["spacebar", "1"]).to("slash", "left_shift"),
-      k.mapSimultaneous(["spacebar", "2"]).to("slash"),
-      k
-        .mapSimultaneous(["spacebar", "3"])
-        .to("grave_accent_and_tilde", "left_shift"),
-      k.mapSimultaneous(["spacebar", "4"]).to("open_bracket"),
-      k.mapSimultaneous(["spacebar", "5"]).to("close_bracket"),
-      k.mapSimultaneous(["spacebar", "6"]).to("open_bracket", "left_option"),
-      k.mapSimultaneous(["spacebar", "7"]).to("close_bracket", "left_option"),
-      k.mapSimultaneous(["spacebar", "8"]).to("9", "left_shift"),
-      k.mapSimultaneous(["spacebar", "9"]).to("0", "left_shift"),
-      k.mapSimultaneous(["spacebar", "q"]).to("l").to("a"),
-      k.mapSimultaneous(["left_command", "q"]).to("fn"),
-      k.mapSimultaneous(["right_command", "q"]).to("fn"),
-      k.map("q").to("period"),
-      k.mapSimultaneous(["spacebar", "w"]).to("e"),
-      k.mapSimultaneous(["left_command", "w"]).to("fn"),
-      k.mapSimultaneous(["right_command", "w"]).to("g").to("a"),
-      k.map("w").to("k").to("a"),
-      k.mapSimultaneous(["spacebar", "e"]).to("r").to("i"),
-      k.mapSimultaneous(["left_command", "e"]).to("fn"),
-      k.mapSimultaneous(["right_command", "e"]).to("d").to("a"),
-      k.map("e").to("t").to("a"),
-      k.mapSimultaneous(["spacebar", "r"]).to("l").to("y").to("a"),
-      k.mapSimultaneous(["left_command", "r"]).to("fn"),
-      k.mapSimultaneous(["right_command", "r"]).to("g").to("o"),
-      k.map("r").to("k").to("o"),
-      k.mapSimultaneous(["spacebar", "t"]).to("r").to("e"),
-      k.mapSimultaneous(["left_command", "t"]).to("fn"),
-      k.mapSimultaneous(["right_command", "t"]).to("z").to("a"),
-      k.map("t").to("s").to("a"),
-      k.mapSimultaneous(["spacebar", "y"]).to("y").to("o"),
-      k.mapSimultaneous(["left_command", "y"]).to("p").to("a"),
-      k.mapSimultaneous(["right_command", "y"]).to("fn"),
-      k.map("y").to("r").to("a"),
-      k.mapSimultaneous(["spacebar", "u"]).to("n").to("i"),
-      k.mapSimultaneous(["left_command", "u"]).to("d").to("i"),
-      k.mapSimultaneous(["right_command", "u"]).to("b").to("u"),
-      k.map("u").to("c").to("h").to("i"),
-      k.mapSimultaneous(["spacebar", "i"]).to("r").to("u"),
-      k.mapSimultaneous(["left_command", "i"]).to("g").to("u"),
-      k.mapSimultaneous(["right_command", "i"]).to("fn"),
-      k.map("i").to("k").to("u"),
-      k.mapSimultaneous(["spacebar", "o"]).to("m").to("a"),
-      k.mapSimultaneous(["left_command", "o"]).to("d").to("u"),
-      k.mapSimultaneous(["right_command", "o"]).to("fn"),
-      k.map("o").to("t").to("u"),
-      k.mapSimultaneous(["spacebar", "p"]).to("l").to("e"),
-      k.mapSimultaneous(["left_command", "p"]).to("p").to("i"),
-      k.mapSimultaneous(["right_command", "p"]).to("fn"),
-      k.map("p").to("comma"),
-      k.mapSimultaneous(["spacebar", "a"]).to("w").to("o"),
-      k.mapSimultaneous(["left_command", "a"]).to("fn"),
-      k.mapSimultaneous(["right_command", "a"]).to("v").to("u"),
-      k.map("a").to("u"),
-      k.mapSimultaneous(["spacebar", "s"]).to("a"),
-      k.mapSimultaneous(["left_command", "s"]).to("fn"),
-      k.mapSimultaneous(["right_command", "s"]).to("z").to("i"),
-      k.map("s").to("s").to("i"),
-      k.mapSimultaneous(["spacebar", "d"]).to("n").to("a"),
-      k.mapSimultaneous(["left_command", "d"]).to("fn"),
-      k.mapSimultaneous(["right_command", "d"]).to("d").to("e"),
-      k.map("d").to("t").to("e"),
-      k.mapSimultaneous(["spacebar", "f"]).to("l").to("y").to("u"),
-      k.mapSimultaneous(["left_command", "f"]).to("fn"),
-      k.mapSimultaneous(["right_command", "f"]).to("g").to("e"),
-      k.map("f").to("k").to("e"),
-      k.mapSimultaneous(["spacebar", "g"]).to("m").to("o"),
-      k.mapSimultaneous(["left_command", "g"]).to("fn"),
-      k.mapSimultaneous(["right_command", "g"]).to("z").to("e"),
-      k.map("g").to("s").to("e"),
-      k.mapSimultaneous(["spacebar", "h"]).to("m").to("i"),
-      k.mapSimultaneous(["left_command", "h"]).to("b").to("a"),
-      k.mapSimultaneous(["right_command", "h"]).to("z").to("h"),
-      k.map("h").to("h").to("a"),
-      k.mapSimultaneous(["spacebar", "j"]).to("o"),
-      k.mapSimultaneous(["left_command", "j"]).to("d").to("o"),
-      k.mapSimultaneous(["right_command", "j"]).to("z").to("j"),
-      k.map("j").to("t").to("o"),
-      k.mapSimultaneous(["spacebar", "k"]).to("n").to("o"),
-      k.mapSimultaneous(["left_command", "k"]).to("g").to("i"),
-      k.mapSimultaneous(["right_command", "k"]).to("z").to("k"),
-      k.map("k").to("k").to("i"),
-      k.mapSimultaneous(["spacebar", "l"]).to("l").to("y").to("o"),
-      k.mapSimultaneous(["left_command", "l"]).to("p").to("o"),
-      k.mapSimultaneous(["right_command", "l"]).to("z").to("l"),
-      k.map("l").to("i"),
-      k.mapSimultaneous(["spacebar", "semicolon"]).to("l").to("t").to("u"),
-      k.mapSimultaneous(["left_command", "semicolon"]).to("semicolon"),
-      k.mapSimultaneous(["right_command", "semicolon"]).to("fn"),
-      k.map("semicolon").to("n").to("n"),
-      k.mapSimultaneous(["spacebar", "quote"]).to("l").to("w").to("a"),
-      k.mapSimultaneous(["spacebar", "z"]).to("l").to("u"),
-      k.mapSimultaneous(["left_command", "z"]).to("fn"),
-      k.mapSimultaneous(["right_command", "z"]).to("fn"),
-      k.map("z").to("spacebar"),
-      k.mapSimultaneous(["spacebar", "x"]).to("hyphen"),
-      k.mapSimultaneous(["left_command", "x"]).to("fn"),
-      k.mapSimultaneous(["right_command", "x"]).to("b").to("i"),
-      k.map("x").to("h").to("i"),
-      k.mapSimultaneous(["spacebar", "c"]).to("r").to("o"),
-      k.mapSimultaneous(["left_command", "c"]).to("fn"),
-      k.mapSimultaneous(["right_command", "c"]).to("z").to("u"),
-      k.map("c").to("s").to("u"),
-      k.mapSimultaneous(["spacebar", "v"]).to("y").to("a"),
-      k.mapSimultaneous(["left_command", "v"]).to("fn"),
-      k.mapSimultaneous(["right_command", "v"]).to("b").to("u"),
-      k.map("v").to("f").to("u"),
-      k.mapSimultaneous(["spacebar", "b"]).to("l").to("i"),
-      k.mapSimultaneous(["left_command", "b"]).to("b").to("e"),
-      k.mapSimultaneous(["right_command", "b"]).to("b").to("e"),
-      k.map("b").to("h").to("e"),
-      k.mapSimultaneous(["spacebar", "n"]).to("n").to("u"),
-      k.mapSimultaneous(["left_command", "n"]).to("p").to("u"),
-      k.mapSimultaneous(["right_command", "n"]).to("fn"),
-      k.map("n").to("m").to("e"),
-      k.mapSimultaneous(["spacebar", "m"]).to("y").to("u"),
-      k.mapSimultaneous(["left_command", "m"]).to("z").to("o"),
-      k.mapSimultaneous(["right_command", "m"]).to("fn"),
-      k.map("m").to("s").to("o"),
-      k.mapSimultaneous(["spacebar", "comma"]).to("m").to("u"),
-      k.mapSimultaneous(["left_command", "comma"]).to("p").to("e"),
-      k.mapSimultaneous(["right_command", "comma"]).to("comma", "left_option"),
-      k.map("comma").to("n").to("e"),
-      k.mapSimultaneous(["spacebar", "period"]).to("w").to("a"),
-      k.mapSimultaneous(["left_command", "period"]).to("b").to("o"),
-      k
-        .mapSimultaneous(["right_command", "period"])
-        .to("period", "left_option"),
-      k.map("period").to("h").to("o"),
-      k.mapSimultaneous(["spacebar", "slash"]).to("l").to("o"),
-      k.mapSimultaneous(["left_command", "slash"]).to("fn"),
-      k.mapSimultaneous(["right_command", "slash"]).to("slash", "left_option"),
-    ]);
+    .manipulators(nicolaManipulators);
 }
 
 function commandKeyRemap() {
@@ -181,59 +231,7 @@ function commandKeyRemap() {
     ]);
 }
 
-function escapeKeyRemap() {
-  return k
-    .rule("escキーを押したときに、英数キーも送信する（vim用）")
-    .manipulators([
-      {
-        from: { key_code: "escape" },
-        to: [{ key_code: "escape" }, { key_code: "japanese_eisuu" }],
-        type: "basic",
-      },
-    ]);
-}
-
-function controlBracketRemap() {
-  return k
-    .rule("Ctrl+[を押したときに、英数キーも送信する（vim用） (rev 2)")
-    .manipulators([
-      {
-        conditions: [
-          { keyboard_types: ["ansi", "iso"], type: "keyboard_type_if" },
-        ],
-        from: {
-          key_code: "open_bracket",
-          modifiers: { mandatory: ["control"] },
-        },
-        to: [
-          { key_code: "open_bracket", modifiers: ["control"] },
-          { key_code: "japanese_eisuu" },
-        ],
-        type: "basic",
-      },
-      {
-        conditions: [{ keyboard_types: ["jis"], type: "keyboard_type_if" }],
-        from: {
-          key_code: "close_bracket",
-          modifiers: { mandatory: ["control"] },
-        },
-        to: [
-          { key_code: "close_bracket", modifiers: ["control"] },
-          { key_code: "japanese_eisuu" },
-        ],
-        type: "basic",
-      },
-    ]);
-}
-
-function simultaneousRemap() {
-  return k
-    .rule("simultaneousRemap", k.ifInputSource(japaneseInputSources))
-    .manipulators([]);
-}
-
-function specialRemap() {
-  return k
-    .rule("specialRemap", k.ifInputSource(japaneseInputSources))
-    .manipulators([]);
-}
+// Write to profile
+k.writeToProfile("UK NICOLA", [nicolaUKBasic(), commandKeyRemap()], {
+  "basic.simultaneous_threshold_milliseconds": 100,
+});
