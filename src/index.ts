@@ -231,7 +231,21 @@ function commandKeyRemap() {
     ]);
 }
 
+function sendEisuuOnEscape() {
+  return k.rule("ESCキーを押したときに英数キーを送信する。").manipulators([
+    {
+      from: { key_code: "escape" },
+      to: [{ key_code: "escape" }, { key_code: "japanese_eisuu" }],
+      type: "basic",
+    },
+  ]);
+}
+
 // Write to profile
-k.writeToProfile("ANSI/ISO NICOLA", [nicolaBasic(), commandKeyRemap()], {
-  "basic.simultaneous_threshold_milliseconds": 100,
-});
+k.writeToProfile(
+  "ANSI/ISO NICOLA",
+  [nicolaBasic(), commandKeyRemap(), sendEisuuOnEscape()],
+  {
+    "basic.simultaneous_threshold_milliseconds": 100,
+  }
+);
