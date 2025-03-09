@@ -123,8 +123,8 @@ const rightCommandMaps: KeyMappings = {
   b: ["b", "e"],
   n: ["fn"],
   m: ["fn"],
-  comma: ["comma", "left_option"],
-  period: ["period", "left_option"],
+  comma: ["f17"], // Send F17 to switch punctuation mode. Switching is done by BTT (tenmaruModeSwitcher.bttpreset).
+  period: ["fn"],
   slash: ["slash", "left_option"],
 };
 

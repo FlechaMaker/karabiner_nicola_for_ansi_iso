@@ -1,0 +1,72 @@
+[
+  {
+    "BTTActionCategory" : 0,
+    "BTTLastUpdatedAt" : 1741507421.5098839,
+    "BTTTriggerType" : 0,
+    "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+    "BTTUUID" : "555CA542-BA3D-4785-9943-57DC6DF124D4",
+    "BTTPredefinedActionType" : 366,
+    "BTTPredefinedActionName" : "Empty Placeholder",
+    "BTTAdditionalConfiguration" : "8388608",
+    "BTTKeyboardShortcutScope" : 0,
+    "BTTKeyboardShortcutKeyboardType" : 0,
+    "BTTTriggerOnDown" : 1,
+    "BTTLayoutIndependentChar" : "F17",
+    "BTTEnabled" : 1,
+    "BTTEnabled2" : 1,
+    "BTTShortcutKeyCode" : 64,
+    "BTTShortcutModifierKeys" : 8388608,
+    "BTTOrder" : 2,
+    "BTTAutoAdaptToKeyboardLayout" : 0,
+    "BTTAdditionalActions" : [
+      {
+        "BTTActionCategory" : 0,
+        "BTTLastUpdatedAt" : 1741507505.286752,
+        "BTTTriggerParentUUID" : "555CA542-BA3D-4785-9943-57DC6DF124D4",
+        "BTTIsPureAction" : true,
+        "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+        "BTTUUID" : "B0B09333-40DB-4C14-925D-854C37A4273C",
+        "BTTPredefinedActionType" : 281,
+        "BTTPredefinedActionName" : "Run Real JavaScript",
+        "BTTAdditionalActionData" : {
+          "BTTScriptFunctionToCall" : "tenmaruToggle",
+          "BTTJavaScriptUseIsolatedContext" : false,
+          "BTTAppleScriptRunInBackground" : false,
+          "BTTScriptType" : 3,
+          "BTTAppleScriptString" : "async function tenmaruToggle() {\n    \/\/ シェルスクリプトの定義\n    let shellScript = `\n# 現在の句読点設定値（0～3）を取得\ncurrent=$(defaults read com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey 2>\/dev\/null)\n\n# 値が取得できなかった場合は初期値として0を使用\nif [ -z \"$current\" ]; then\n    current=0\nfi\n\n# 1インクリメントし、4で割った余りを計算（3の場合は0に戻す）\nnew=$(( (current + 1) % 4 ))\n\n# 新しい句読点設定を書き込む\nif defaults write com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey \"$new\"; then\n    killall -HUP JapaneseIM 2>\/dev\/null || true\n    echo \"$new\"\nelse\n    echo \"-1\"\nfi\n`;\n\n    \/\/ シェルスクリプト実行用のラッパー設定\n    let shellScriptWrapper = {\n        script: shellScript,\n        launchPath: '\/bin\/bash',\n        parameters: '-c',\n        environmentVariables: ''\n    };\n\n    \/\/ シェルスクリプトの実行結果を取得\n    let result = await runShellScript(shellScriptWrapper);\n    result = result.trim();\n\n    let tenmaruMode;\n    let explanation;\n\n    switch (result) {\n        case '0': \n            tenmaruMode = \"。、\"; \n            explanation = \"まる・てん\"; \n            break;\n        case '1': \n            tenmaruMode = \"。，\"; \n            explanation = \"まる・カンマ\"; \n            break;\n        case '2': \n            tenmaruMode = \"．、\"; \n            explanation = \"ピリオド・てん\"; \n            break;\n        case '3': \n            tenmaruMode = \"．，\"; \n            explanation = \"ピリオド・カンマ\"; \n            break;\n        case '-1': \n            tenmaruMode = \"エラー\"; \n            explanation = \"エラーが発生しました。\"; \n            break;\n        default: \n            tenmaruMode = \"不明\"; \n            explanation = \"不明な設定値です。\"; \n            break;\n    }\n\n    \/\/ HUDの設定\n    \/\/ ・タイトルには tenmaruMode を表示\n    \/\/ ・詳細部分（下部の小さい文字）に説明文を表示\n    let hudAction = {\n        \"BTTActionHUDTitle\": tenmaruMode,\n        \"BTTActionHUDDetail\": explanation,\n        \"BTTActionHUDDuration\": 3\n    };\n\n    \/\/ HUDアクションのラッピング\n    let hudActionWrapper = {\n        \"BTTPredefinedActionType\": 254,\n        \"BTTHUDActionConfiguration\": JSON.stringify(hudAction)\n    };\n\n    \/\/ HUDアクションのトリガー\n    \/\/ await callBTT('trigger_action', {json: JSON.stringify(hudActionWrapper)});\n\n    \/\/ 必要であればBTT変数に設定\n    await callBTT('set_string_variable', {variable_name: 'tenmaruMode', to: tenmaruMode});\n\tawait callBTT('set_string_variable', {variable_name: 'explanation', to: explanation});\n\n    \/\/ 結果をBTTに返す\n    returnToBTT(result);\n};",
+          "BTTActionJSRunInSeparateContext" : false,
+          "BTTAppleScriptUsePath" : false,
+          "BTTScriptLocation" : 0
+        },
+        "BTTRealJavaScriptString" : "async function tenmaruToggle() {\n    \/\/ シェルスクリプトの定義\n    let shellScript = `\n# 現在の句読点設定値（0～3）を取得\ncurrent=$(defaults read com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey 2>\/dev\/null)\n\n# 値が取得できなかった場合は初期値として0を使用\nif [ -z \"$current\" ]; then\n    current=0\nfi\n\n# 1インクリメントし、4で割った余りを計算（3の場合は0に戻す）\nnew=$(( (current + 1) % 4 ))\n\n# 新しい句読点設定を書き込む\nif defaults write com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey \"$new\"; then\n    killall -HUP JapaneseIM 2>\/dev\/null || true\n    echo \"$new\"\nelse\n    echo \"-1\"\nfi\n`;\n\n    \/\/ シェルスクリプト実行用のラッパー設定\n    let shellScriptWrapper = {\n        script: shellScript,\n        launchPath: '\/bin\/bash',\n        parameters: '-c',\n        environmentVariables: ''\n    };\n\n    \/\/ シェルスクリプトの実行結果を取得\n    let result = await runShellScript(shellScriptWrapper);\n    result = result.trim();\n\n    let tenmaruMode;\n    let explanation;\n\n    switch (result) {\n        case '0': \n            tenmaruMode = \"。、\"; \n            explanation = \"まる・てん\"; \n            break;\n        case '1': \n            tenmaruMode = \"。，\"; \n            explanation = \"まる・カンマ\"; \n            break;\n        case '2': \n            tenmaruMode = \"．、\"; \n            explanation = \"ピリオド・てん\"; \n            break;\n        case '3': \n            tenmaruMode = \"．，\"; \n            explanation = \"ピリオド・カンマ\"; \n            break;\n        case '-1': \n            tenmaruMode = \"エラー\"; \n            explanation = \"エラーが発生しました。\"; \n            break;\n        default: \n            tenmaruMode = \"不明\"; \n            explanation = \"不明な設定値です。\"; \n            break;\n    }\n\n    \/\/ HUDの設定\n    \/\/ ・タイトルには tenmaruMode を表示\n    \/\/ ・詳細部分（下部の小さい文字）に説明文を表示\n    let hudAction = {\n        \"BTTActionHUDTitle\": tenmaruMode,\n        \"BTTActionHUDDetail\": explanation,\n        \"BTTActionHUDDuration\": 3\n    };\n\n    \/\/ HUDアクションのラッピング\n    let hudActionWrapper = {\n        \"BTTPredefinedActionType\": 254,\n        \"BTTHUDActionConfiguration\": JSON.stringify(hudAction)\n    };\n\n    \/\/ HUDアクションのトリガー\n    \/\/ await callBTT('trigger_action', {json: JSON.stringify(hudActionWrapper)});\n\n    \/\/ 必要であればBTT変数に設定\n    await callBTT('set_string_variable', {variable_name: 'tenmaruMode', to: tenmaruMode});\n\tawait callBTT('set_string_variable', {variable_name: 'explanation', to: explanation});\n\n    \/\/ 結果をBTTに返す\n    returnToBTT(result);\n};",
+        "BTTKeyboardShortcutKeyboardType" : 0,
+        "BTTEnabled" : 1,
+        "BTTEnabled2" : 1,
+        "BTTShortcutKeyCode" : -1,
+        "BTTOrder" : 5,
+        "BTTAutoAdaptToKeyboardLayout" : 0
+      },
+      {
+        "BTTActionCategory" : 0,
+        "BTTLastUpdatedAt" : 1741507602.3732519,
+        "BTTTriggerParentUUID" : "555CA542-BA3D-4785-9943-57DC6DF124D4",
+        "BTTIsPureAction" : true,
+        "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+        "BTTUUID" : "51A8A789-33CF-4BAC-8D6B-4E1E3C97D35D",
+        "BTTPredefinedActionType" : 254,
+        "BTTPredefinedActionName" : "Show HUD Overlay",
+        "BTTHUDActionConfiguration" : "{\"BTTActionHUDBlur\":true,\"BTTActionHUDBackground\":\"0.000000, 0.000000, 0.000000, 0.000000\",\"BTTIconConfigImageHeight\":100,\"BTTActionHUDPosition\":0,\"BTTActionHUDDetail\":\"\",\"BTTActionHUDDuration\":2,\"BTTActionHUDDisplayToUse\":0,\"BTTIconConfigImageWidth\":100,\"BTTActionHUDSlideDirection\":0,\"BTTActionHUDHideWhenOtherHUDAppears\":false,\"BTTActionHUDWidth\":220,\"BTTActionHUDAttributedTitle\":\"{\\\\rtf1\\\\ansi\\\\ansicpg1252\\\\cocoartf2821\\n\\\\cocoatextscaling0\\\\cocoaplatform0{\\\\fonttbl\\\\f0\\\\fswiss\\\\fcharset0 Helvetica-Bold;}\\n{\\\\colortbl;\\\\red255\\\\green255\\\\blue255;\\\\red0\\\\green0\\\\blue0;}\\n{\\\\*\\\\expandedcolortbl;;\\\\cssrgb\\\\c0\\\\c0\\\\c0\\\\c84706\\\\cname labelColor;}\\n\\\\pard\\\\tx560\\\\tx1120\\\\tx1680\\\\tx2240\\\\tx2800\\\\tx3360\\\\tx3920\\\\tx4480\\\\tx5040\\\\tx5600\\\\tx6160\\\\tx6720\\\\pardirnatural\\\\qc\\\\partightenfactor0\\n\\n\\\\f0\\\\b\\\\fs80 \\\\cf2 \\\\{tenmaruMode\\\\}}\",\"BTTActionHUDBorderWidth\":0,\"BTTActionHUDTitle\":\"\",\"BTTActionHUDHeight\":220}",
+        "BTTKeyboardShortcutKeyboardType" : 0,
+        "BTTEnabled" : 1,
+        "BTTEnabled2" : 1,
+        "BTTShortcutKeyCode" : -1,
+        "BTTOrder" : 6,
+        "BTTAutoAdaptToKeyboardLayout" : 0
+      }
+    ],
+    "BTTTriggerConfig" : {
+      "BTTLeftRightModifierDifferentiation" : 1,
+      "BTTHUDText" : "😊"
+    }
+  }
+]
