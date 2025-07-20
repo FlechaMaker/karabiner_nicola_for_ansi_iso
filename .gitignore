@@ -39,3 +39,8 @@ pnpm-debug.log*
 .env.*.local
 src/karabiner-config.ts
 src/utils.ts
+
+# Cursor
+.cursor*
+.cursor/
+.specstory/

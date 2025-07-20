@@ -167,32 +167,65 @@ const nicolaManipulators = [
   k.withMapper(numberKeyMaps)((key, value) =>
     k
       .mapSimultaneous(["spacebar", key.toString() as k.FromKeyParam])
-      .to(value.map((v) => ({ key_code: v })))
+      .to(
+        value.map((v, index) =>
+          index === 0
+            ? { key_code: v }
+            : { key_code: v, hold_down_milliseconds: 5 * index }
+        )
+      )
   ),
 
   // Spacebar combinations
   k.withMapper(spacebarMaps)((key, value) =>
     k
       .mapSimultaneous(["spacebar", key as k.FromKeyParam])
-      .to(value.map((v) => ({ key_code: v })))
+      .to(
+        value.map((v, index) =>
+          index === 0
+            ? { key_code: v }
+            : { key_code: v, hold_down_milliseconds: 5 * index }
+        )
+      )
   ),
+
   // Left command combinations
   k.withMapper(leftCommandMaps)((key, value) =>
     k
       .mapSimultaneous(["left_command", key as k.FromKeyParam])
-      .to(value.map((v) => ({ key_code: v })))
+      .to(
+        value.map((v, index) =>
+          index === 0
+            ? { key_code: v }
+            : { key_code: v, hold_down_milliseconds: 5 * index }
+        )
+      )
   ),
 
   // Right command combinations
   k.withMapper(rightCommandMaps)((key, value) =>
     k
       .mapSimultaneous(["right_command", key as k.FromKeyParam])
-      .to(value.map((v) => ({ key_code: v })))
+      .to(
+        value.map((v, index) =>
+          index === 0
+            ? { key_code: v }
+            : { key_code: v, hold_down_milliseconds: 5 * index }
+        )
+      )
   ),
 
   // Single key mappings
   k.withMapper(singleKeyMaps)((key, value) =>
-    k.map(key as k.FromKeyParam).to(value.map((v) => ({ key_code: v })))
+    k
+      .map(key as k.FromKeyParam)
+      .to(
+        value.map((v, index) =>
+          index === 0
+            ? { key_code: v }
+            : { key_code: v, hold_down_milliseconds: 5 * index }
+        )
+      )
   ),
 ];
 
@@ -244,6 +277,14 @@ function sendEisuuOnEscape() {
 // Write to profile
 k.writeToProfile(
   "ANSI/ISO NICOLA",
+  [nicolaBasic(), commandKeyRemap(), sendEisuuOnEscape()],
+  {
+    "basic.simultaneous_threshold_milliseconds": 100,
+  }
+);
+
+k.writeToProfile(
+  "US ANSI/ISO NICOLA",
   [nicolaBasic(), commandKeyRemap(), sendEisuuOnEscape()],
   {
     "basic.simultaneous_threshold_milliseconds": 100,
