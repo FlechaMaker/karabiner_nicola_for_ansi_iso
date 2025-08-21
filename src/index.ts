@@ -197,7 +197,7 @@ const nicolaManipulators = [
         value.map((v, index) =>
           index === 0
             ? { key_code: v }
-            : { key_code: v, hold_down_milliseconds: 5 * index }
+            : { key_code: v, hold_down_milliseconds: 0 * index }
         )
       )
   ),
